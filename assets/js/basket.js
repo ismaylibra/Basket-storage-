@@ -1,107 +1,77 @@
 let basket = JSON.parse(localStorage.getItem('basket'))
-let totalPrice = 0
-basket.forEach(item=>{
-    totalPrice=item.price
-    
-})
 
 
-function ShowAlert(){
+
+function ShowAlert() {
     let basket = JSON.parse(localStorage.getItem('basket'))
-    if (basket.length ===0) {
+    if (basket.length === 0) {
         document.getElementById('Alert').classList.remove('d-none')
         document.querySelector('table').classList.add('d-none')
     }
-    else{
+    else {
         document.getElementById('Alert').classList.add('d-none')
         document.querySelector('table').classList.remove('d-none')
     }
-        let  list = ''
-       basket.forEach(item=>{
+    let list = ''
+    basket.forEach(item => {
 
-           list +=
-           `
+        list +=
+            `
            <tr>
            <td>${item.id}</td>
            <td><img src="${item.img}" alt=""></td>
            <td>${item.name}</td>
-           <td><input type="number" id="changeInput" onchange="Change()" value="${item.count}" ></td>
-           <td>${totalPrice}</td>
-            <td><button class="btn btn-danger" id="remove" onclick="RemoveBtn()"><i class="fa-solid fa-trash-can"></i></button></td>
+           <td><input type="number" id="changeInput" onchange="Change(event.target,${item.id})" value="${item.count}" ></td>
+           <td>${item.price}</td>
+           <td>${item.price*item.count}</td>
+
+            <td><button class="btn btn-danger" id="remove" onclick="RemoveBtn(event.target, ${item.id})"><i class="fa-solid fa-trash-can"></i></button></td>
 
             </tr>
             `
 
-        })
-        let sum = 0
-        let count =0
-        for (let item of basket) {
-            sum+=item.price
-            count+=item.count
-        }
-        let resultCount = document.getElementById('finalCount')
-        let resultPrice = document.getElementById('finalPrice')
-        resultPrice.innerHTML = sum
-        resultCount.innerHTML= count
-
-        document.getElementById('tbody').innerHTML = list
-
-
+    })
+    let totalPrice = 0
+    let count = 0
+    for (let item of basket) {
+        totalPrice+=item.count*item.price
+        count += +item.count
     }
+    let resultCount = document.getElementById('finalCount')
+    let resultPrice = document.getElementById('finalPrice')
+    resultCount.innerHTML = count
+    resultPrice.innerHTML = totalPrice
+    
+    document.getElementById('tbody').innerHTML = list
 
+
+}
+
+ShowAlert();
+
+function Change(el,id) {
+    let basket = JSON.parse(localStorage.getItem('basket'))
+    let inputChange=el.value
+    let prod = basket.find(p=>p.id==id)
+    prod.count=inputChange
+    localStorage.setItem('basket',JSON.stringify(basket))
+    ShowAlert()
+}
+
+function RemoveBtn(el, id) {
+    let basket = JSON.parse(localStorage.getItem('basket'))
+    console.log('gagaa');
+
+    let basketId = basket.findIndex(x => x.id == id);
+
+    basket.splice(basketId, 1)
+
+    localStorage.setItem('basket',JSON.stringify(basket))
+
+    el.parentElement.parentElement.remove();
     ShowAlert();
 
-    function Change(){
-        let basket = JSON.parse(localStorage.getItem('basket'))
-        let inputChange = document.getElementById('changeInput').value
-        // console.log(inputChange)
 
-        basket.forEach(item=>{
-          item.count=0
-
-           item.count = Number(inputChange)
-            totalPrice = Number(item.price)*Number(item.count)
-
-            // console.log(item.price)
-        //    console.log(typeof(item.price));
-          // item.price= newPrice
-
-        })
-        localStorage.setItem('basket',JSON.stringify(basket))
-        ShowAlert();
-    }
-    // function FinalResults(){
-
-       
-    //     let basket = JSON.parse(localStorage.getItem('basket'))
-    //     let sum =0
-    //     basket.forEach(x=>{
-    //         sum = x.price++
-    //     })
-    //     let count = 0
-    //     basket.forEach(item=>{
-    //         count=item.count
-    //     })
-    //     for (let item of basket) {
-    //         sum+=item.price
-    //         count+=item.count
-    //     }
-    //     let resultCount = document.getElementById('finalCount')
-    //     let resultPrice = document.getElementById('finalPrice')
-    //     resultPrice.innerHTML = sum
-    //     resultCount.innerHTML= count
-    // }
-        
-    // FinalResults()
-    
-    function RemoveBtn(){
-        let basket = JSON.parse(localStorage.getItem('basket'))
-        
-        for (let x of basket) {
-            let filtered = basket.filter(item=>item.id !== x.id)
-            localStorage.setItem('basket',JSON.stringify(filtered))
-        }
-        
-    }
+}
 
 

@@ -39,4 +39,7 @@ function ShowCount(){
     let basket = JSON.parse(localStorage.getItem('basket'))
     let count = basket.length
     document.getElementById('count').innerHTML = count
+    localStorage.setItem('basket',JSON.stringify(basket))
+    
 }
+ShowCount()
